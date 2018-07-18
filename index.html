@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Week 7 - canvas game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgb(212, 212, 212);
+            font-family: 微軟正黑體;
+        }
+
+        canvas {
+            /*          max-width: 100%; */
+            background-color: #001D2E;
+            border-radius: 5px;
+            box-shadow: 0px 0px 20px 4px rgb(54, 54, 54);
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 4px 30px;
+            display: block;
+            border: 2px solid rgba(255, 255, 255, 1);
+            position: absolute;
+            color: white;
+            border-radius: 30px;
+            font-size: 28px;
+            margin-top: 130px;
+            transition: all .2s;
+        }
+
+        .btn:hover {
+            background-color: rgba(255, 255, 255, .6);
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="mycanvas"></canvas>
+    <a href="" class="btn">Start Game</a>
+    <script src="all.js"></script>
+</body>
+
+</html>
