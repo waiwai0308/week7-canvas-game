@@ -32,11 +32,18 @@
             position: absolute;
             color: white;
             border-radius: 30px;
-            font-size: 28px;
-            margin-top: 130px;
+
             transition: all .2s;
         }
-
+        .start {
+            font-size: 28px;
+            margin-top: 130px;
+        }
+        .exit {
+            font-size: 28px;
+            margin-top: 350px;
+            margin-left: 610px;
+        }
         .btn:hover {
             background-color: rgba(255, 255, 255, .6);
         }
@@ -45,7 +52,9 @@
 
 <body>
     <canvas id="mycanvas"></canvas>
-    <a href="" class="btn">Start Game</a>
+    <a href="" class="btn start">Start Game</a>
+    <a href="" class="btn exit">Exit</a>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
     <script src="all.js"></script>
 </body>
 
