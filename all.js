@@ -15,7 +15,7 @@ canvas.height = wh;
 var time = 0;
 
 //進度
-var gameStep = 2;
+var gameStep = 1;
 
 var changeState = "";
 
