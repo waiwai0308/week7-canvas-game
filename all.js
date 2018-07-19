@@ -54,7 +54,7 @@ class Ship {
             x: 0,
             y: 0,
             r: 50,
-            deg: 50 * degToPi
+            deg: 0
         }
         Object.assign(def, args);
         Object.assign(Ship, def);
@@ -62,7 +62,7 @@ class Ship {
     draw() {
         //船
         ctx.save();
-        ctx.rotate(Ship.deg * PI2 / 360);
+        ctx.rotate(Ship.deg);
         ctx.beginPath();
         ctx.arc(0, 0, Ship.r, 0, PI2);
         ctx.strokeStyle = "white";
@@ -83,7 +83,7 @@ class Ship {
         ctx.arc(0, 0, 80, 0, PI2 / 4);
         ctx.stroke();
 
-        bullets.forEach(b => b.draw());
+
 
         //船虛線
         ctx.beginPath();
@@ -134,18 +134,16 @@ function update() {
 
     if (time % 30 == 0) {
         var b = new Bullet({
-            x: -65,
-            y: -65,
+            x: ww/2,
+            y: wh/2,
             v: {
-                x: Math.cos(Ship.deg) * 10,
-                y: Math.sin(Ship.deg) * 10,
+                x: Math.cos(Ship.deg) * 30,
+                y: Math.sin(Ship.deg) * 30,
             }
         });
         bullets.push(b);
         bullets.forEach(b => b.update());
     }
-
-
 }
 function draw() {
     ctx.clearRect(0, 0, ww, wh);
@@ -208,16 +206,16 @@ document.addEventListener("keydown", function (e) {
             if (Ship.deg === 360) {
                 Ship.deg = 0;
             }
-            TweenMax.to(Ship, 0.15, {
-                deg: Ship.deg + 5
+            TweenMax.to(Ship, 0.2, {
+                deg: Ship.deg + 0.1
             })
         }
         if (e.key === "ArrowLeft") {
             if (Ship.deg === 0) {
                 Ship.deg = 360;
             }
-            TweenMax.to(Ship, 0.15, {
-                deg: Ship.deg - 5
+            TweenMax.to(Ship, 0.2, {
+                deg: Ship.deg - 0.1
             })
         }
     }
@@ -248,13 +246,15 @@ function drawStep2() {
     ctx.fillText("RADIO Defense", 25, 160);
     ctx.font = "128px '微軟正黑體'";
     ctx.fillText("R", 15, 120);
-
+    
     ctx.save();
 
     ctx.translate(ww / 2, wh / 2);
+    
     ship.draw();
 
     ctx.restore();
+    bullets.forEach(b => b.draw());
 
     ctx.font = "24px '微軟正黑體'";
     ctx.fillText("Key → to turn right", 20, 700);
