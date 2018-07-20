@@ -17,9 +17,6 @@ var time = 0;
 //進度
 var gameStep = 1;
 
-var changeState = "";
-
-
 class Bullet {
     constructor(args) {
         let def = {
@@ -34,8 +31,12 @@ class Bullet {
         Object.assign(this, def);
     }
     update() {
-        this.x += this.v.x;
-        this.y += this.v.y;
+        // this.x += this.v.x;
+        // this.y += this.v.y;
+         TweenMax.to(this, 0.05, {
+            x:this.x + this.v.x,
+            y:this.y + this.v.y
+        });
     }
     draw() {
         ctx.save();
@@ -47,7 +48,6 @@ class Bullet {
         ctx.restore();
     }
 }
-
 class Ship {
     constructor(args) {
         let def = {
@@ -57,14 +57,13 @@ class Ship {
             deg: 0
         }
         Object.assign(def, args);
-        Object.assign(Ship, def);
+        Object.assign(this, def);
     }
     draw() {
         //船
-        ctx.save();
-        ctx.rotate(Ship.deg);
+        ctx.rotate(this.deg);
         ctx.beginPath();
-        ctx.arc(0, 0, Ship.r, 0, PI2);
+        ctx.arc(0, 0, this.r, 0, PI2);
         ctx.strokeStyle = "white";
         ctx.lineWidth = 6;
         ctx.shadowBlur = 10;
@@ -74,7 +73,7 @@ class Ship {
             ctx.lineWidth = 5;
             ctx.beginPath();
             ctx.moveTo(0, 0);
-            ctx.lineTo(0, -Ship.r);
+            ctx.lineTo(0, -this.r);
             ctx.stroke();
             ctx.rotate(PI2 / 3);
         }
@@ -90,17 +89,17 @@ class Ship {
         ctx.rotate(PI2 / 8);
         ctx.lineWidth = 1;
         ctx.setLineDash([3, 5]);
-        ctx.arc(0, 0, Ship.r + 18, 0, PI2);
+        ctx.arc(0, 0, this.r + 18, 0, PI2);
         ctx.stroke();
 
         //發射器
         ctx.beginPath();
-        ctx.moveTo(-Ship.r - 9, 10);
-        ctx.lineTo(-Ship.r - 9, -10);
-        ctx.lineTo(-Ship.r - 25, -10);
-        ctx.lineTo(-Ship.r - 40, -3);
-        ctx.lineTo(-Ship.r - 40, 3);
-        ctx.lineTo(-Ship.r - 25, 10);
+        ctx.moveTo(-this.r - 9, 10);
+        ctx.lineTo(-this.r - 9, -10);
+        ctx.lineTo(-this.r - 25, -10);
+        ctx.lineTo(-this.r - 40, -3);
+        ctx.lineTo(-this.r - 40, 3);
+        ctx.lineTo(-this.r - 25, 10);
 
         ctx.fillStyle = 'white'
         ctx.fill();
@@ -108,21 +107,25 @@ class Ship {
     }
 
 }
+
 var ship;
+var bullets = [];
+
 function init() {
     ship = new Ship({
         deg: 0 * degToPi,
         r: 45
-    })
+    });
 }
 
-var bullets = [];
 function update() {
     time++;
     TweenMax.to(ctx, 0.3, {
         globalAlpha: alpha.toFixed(1)
-    })
+    });
+    
 
+    //隱藏開啟按鈕
     if (gameStep === 1) {
         startbtn.style = "display:block;";
         exitbtn.style = "display:none;";
@@ -131,19 +134,8 @@ function update() {
         startbtn.style = "display:none;";
         exitbtn.style = "display:block;";
     }
+    bullets.forEach(b => b.update());
 
-    if (time % 30 == 0) {
-        var b = new Bullet({
-            x: ww/2,
-            y: wh/2,
-            v: {
-                x: Math.cos(Ship.deg) * 30,
-                y: Math.sin(Ship.deg) * 30,
-            }
-        });
-        bullets.push(b);
-        bullets.forEach(b => b.update());
-    }
 }
 function draw() {
     ctx.clearRect(0, 0, ww, wh);
@@ -163,18 +155,8 @@ init();
 setInterval(update, 1000 / 120);
 requestAnimationFrame(draw);
 
-// 開始遊戲
-const startbtn = document.querySelector(".start");
-startbtn.addEventListener("click", function (e) {
-    e.preventDefault();
-    fadeOut(1, 2);
-});
-const exitbtn = document.querySelector(".exit");
-exitbtn.addEventListener("click", function (e) {
-    e.preventDefault();
-    fadeOut(2, 1);
-});
 
+//場景淡入淡出
 function fadeOut(step, tostep) {
     alpha -= delta;
     if (alpha < 0) {
@@ -200,30 +182,52 @@ function fadeIn(step) {
     setTimeout("fadeIn(" + step + ")", 100);
 }
 
+// JS事件
+const startbtn = document.querySelector(".start");
+startbtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    fadeOut(1, 2);
+});
+const exitbtn = document.querySelector(".exit");
+exitbtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    fadeOut(2, 1);
+});
 document.addEventListener("keydown", function (e) {
     if (gameStep === 2) {
         if (e.key === "ArrowRight") {
-            if (Ship.deg === 360) {
-                Ship.deg = 0;
+            if (ship.deg === 360) {
+                ship.deg = 0;
             }
-            TweenMax.to(Ship, 0.2, {
-                deg: Ship.deg + 0.1
+            TweenMax.to(ship, 0.2, {
+                deg: ship.deg + 0.1
             })
+            
         }
         if (e.key === "ArrowLeft") {
-            if (Ship.deg === 0) {
-                Ship.deg = 360;
+            if (ship.deg === 0) {
+                ship.deg = 360;
             }
-            TweenMax.to(Ship, 0.2, {
-                deg: Ship.deg - 0.1
+            TweenMax.to(ship, 0.2, {
+                deg: ship.deg - 0.1
             })
         }
+    }
+    if (e.key === "w") {
+        var b = new Bullet({
+            x: ww/2 + Math.cos(ship.deg-PI/2)*(ship.r + 43),
+            y: wh/2 + Math.sin(ship.deg-PI/2)*(ship.r + 43),
+            v: {
+                x: Math.cos(ship.deg-PI/2) * 3 ,
+                y: Math.sin(ship.deg-PI/2) * 3 ,
+            }
+        });
+        bullets.push(b);
     }
 });
 
 function drawStep2() {
-    ctx.clearRect(0, 0, ww, wh);
-
+    //格線
     ctx.beginPath();
     ctx.lineWidth = 1;
     for (var i = 0; i < ww; i++) {
@@ -247,16 +251,17 @@ function drawStep2() {
     ctx.font = "128px '微軟正黑體'";
     ctx.fillText("R", 15, 120);
     
+    //船
     ctx.save();
-
-    ctx.translate(ww / 2, wh / 2);
-    
-    ship.draw();
-
+      ctx.translate(ww / 2, wh / 2);
+      ship.draw();
     ctx.restore();
+
+    //子彈
     bullets.forEach(b => b.draw());
 
     ctx.font = "24px '微軟正黑體'";
+    ctx.fillText("Key W to shoot", 20, 660);
     ctx.fillText("Key → to turn right", 20, 700);
     ctx.fillText("Key ← to turn left", 20, 740);
     ctx.font = "72px '微軟正黑體'";
